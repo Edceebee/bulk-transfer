@@ -1,0 +1,54 @@
+server:
+  port: 9087
+
+spring:
+  application:
+    name: bulk-transaction-service
+
+# JWT Configuration
+jwt:
+  # Must be at least 256 bits (32 characters)
+  secret: "mySecretKeyForJWTAuthenticationAndAuthorizationProcess12345"
+
+# Transaction Service Configuration
+transaction-service:
+  url: "http://localhost:8081"  # Replace with actual Transaction Service URL
+
+# Actuator Configuration for Health and Metrics
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+  simple:
+    metrics:
+      export:
+        enabled: true
+
+# Resilience4j Configuration
+resilience4j:
+  retry:
+    configs:
+      default:
+        max-attempts: 2
+        wait-duration: 2s
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+    instances:
+      transactionService:
+        base-config: default
+
+# Add debug logging
+logging:
+  level:
+    com.interswitch.bulktransaction: INFO
+    io.github.resilience4j: DEBUG
+    org.springframework.security: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+
+# Logging Configuration
